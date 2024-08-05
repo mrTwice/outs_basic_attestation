@@ -10,17 +10,17 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 public class ServletDispatcher implements RequestHandler {
-    private Map<String, Method> servlets;
+    private Map<String, Method> routes;
 
     public ServletDispatcher() throws Exception {
-        servlets = ServletScanner.scanAndRegisterServlets("ru.otus.basic.yampolskiy.service");
+        routes = ServletScanner.scanAndRegisterServlets("ru.otus.basic.yampolskiy.service");
     }
 
     @Override
     public HttpResponse execute(HttpRequest request) {
         try {
             String route = request.getRoutingKey();
-            if (!servlets.containsKey(route)) {
+            if (!routes.containsKey(route)) {
                 return new HttpResponse.Builder()
                         .setProtocolVersion(request.getProtocolVersion())
                         .setStatus(HttpStatus.NOT_FOUND)
@@ -28,7 +28,7 @@ public class ServletDispatcher implements RequestHandler {
                         .setBody("<html><body><h1>404! PAGE NOT FOUND</h1></body></html>")
                         .build();
             }
-            Method method = servlets.get(route);
+            Method method = routes.get(route);
             Servlet servlet = (Servlet) method.getDeclaringClass().getDeclaredConstructor().newInstance();
             return (HttpResponse) method.invoke(servlet, request);
         } catch (Exception e) {

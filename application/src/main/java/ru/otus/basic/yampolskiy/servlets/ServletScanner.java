@@ -10,7 +10,7 @@ import java.util.*;
 public class ServletScanner {
 
     public static Map<String, Method> scanAndRegisterServlets(String packageName) throws Exception {
-        Map<String, Method> routeMapping = new HashMap<>();
+        Map<String, Method> routes = new HashMap<>();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         String path = packageName.replace('.', '/');
         Enumeration<URL> resources = classLoader.getResources(path);
@@ -28,33 +28,33 @@ public class ServletScanner {
                 WebServlet webServlet = clazz.getAnnotation(WebServlet.class);
                 String basePath = webServlet.value();
                 for (Method method : clazz.getDeclaredMethods()) {
-                    processRouteAnnotations(routeMapping, basePath, method);
+                    processRouteAnnotations(routes, basePath, method);
                 }
             }
         }
-        return routeMapping;
+        return routes;
     }
 
-    private static void processRouteAnnotations(Map<String, Method> routeMapping, String basePath, Method method) {
+    private static void processRouteAnnotations(Map<String, Method> routes, String basePath, Method method) {
         if (method.isAnnotationPresent(GetRoute.class)) {
             GetRoute route = method.getAnnotation(GetRoute.class);
             String routePath = route.value().isEmpty() ? basePath : basePath + route.value();
-            routeMapping.put("GET " + routePath, method);
+            routes.put("GET " + routePath, method);
         }
         if (method.isAnnotationPresent(PostRoute.class)) {
             PostRoute route = method.getAnnotation(PostRoute.class);
             String routePath = route.value().isEmpty() ? basePath : basePath + route.value();
-            routeMapping.put("POST " + routePath, method);
+            routes.put("POST " + routePath, method);
         }
         if (method.isAnnotationPresent(PutRoute.class)) {
             PutRoute route = method.getAnnotation(PutRoute.class);
             String routePath = route.value().isEmpty() ? basePath : basePath + route.value();
-            routeMapping.put("PUT " + routePath, method);
+            routes.put("PUT " + routePath, method);
         }
         if (method.isAnnotationPresent(DeleteRoute.class)) {
             DeleteRoute route = method.getAnnotation(DeleteRoute.class);
             String routePath = route.value().isEmpty() ? basePath : basePath + route.value();
-            routeMapping.put("DELETE " + routePath, method);
+            routes.put("DELETE " + routePath, method);
         }
     }
 
