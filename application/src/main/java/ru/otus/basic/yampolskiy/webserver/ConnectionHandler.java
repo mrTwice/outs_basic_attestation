@@ -31,18 +31,19 @@ public class ConnectionHandler implements Runnable {
              OutputStream out = socket.getOutputStream()) {
             byte[] buffer = new byte[8192];
             int n = in.read(buffer);
-            String rawRequest = new String(buffer, 0, n);
-            logger.log(Level.DEBUG, rawRequest);
-            HttpRequest httpRequest = HttpParser.parseRawHttp(rawRequest);
-            HttpResponse httpResponse = requestHandler.execute(httpRequest);
-            out.write(httpResponse.toString().getBytes(StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            logger.log(Level.WARN, e.getMessage());
+            if (n > 0){
+                String rawRequest = new String(buffer, 0, n);
+                HttpRequest httpRequest = HttpParser.parseRawHttp(rawRequest);
+                HttpResponse httpResponse = requestHandler.execute(httpRequest);
+                out.write(httpResponse.toString().getBytes(StandardCharsets.UTF_8));
+            }
+        } catch (Exception e) {
+            logger.log(Level.ERROR, e);
         } finally {
             try {
                 socket.close();
             } catch (IOException e) {
-                logger.log(Level.WARN, e.getMessage());
+                logger.log(Level.ERROR, e);
             }
         }
     }

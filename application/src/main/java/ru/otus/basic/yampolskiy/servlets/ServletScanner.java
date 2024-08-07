@@ -8,9 +8,23 @@ import java.net.URL;
 import java.util.*;
 
 public class ServletScanner {
+    private static final String DEFAULT_PACKAGE = "ru.otus.basic.yampolskiy.servlets.defaultservlets";
+    private static final List<String> PACKAGES = new ArrayList<>();
+    private static final Map<String, Method> ROUTES = new HashMap<>();
+
+    static {
+        PACKAGES.add(DEFAULT_PACKAGE);
+    }
 
     public static Map<String, Method> scanAndRegisterServlets(String packageName) throws Exception {
-        Map<String, Method> routes = new HashMap<>();
+        PACKAGES.add(packageName);
+        for (String aPackage : PACKAGES) {
+            scanAndRegisterServlets(aPackage, ROUTES);
+        }
+        return ROUTES;
+    }
+
+    private static void scanAndRegisterServlets(String packageName, Map<String, Method> routes) throws Exception {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         String path = packageName.replace('.', '/');
         Enumeration<URL> resources = classLoader.getResources(path);
@@ -32,7 +46,6 @@ public class ServletScanner {
                 }
             }
         }
-        return routes;
     }
 
     private static void processRouteAnnotations(Map<String, Method> routes, String basePath, Method method) {

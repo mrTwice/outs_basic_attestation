@@ -4,5 +4,5 @@ import ru.otus.basic.yampolskiy.webserver.http.HttpRequest;
 import ru.otus.basic.yampolskiy.webserver.http.HttpResponse;
 
 public interface RequestHandler {
-    HttpResponse execute(HttpRequest request);
+    HttpResponse execute(HttpRequest request) throws Exception;
 }
