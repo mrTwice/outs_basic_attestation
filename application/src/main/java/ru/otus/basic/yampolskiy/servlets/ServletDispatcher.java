@@ -19,7 +19,7 @@ public class ServletDispatcher implements RequestHandler {
 
     public ServletDispatcher() throws Exception {
         routes = new HashMap<>();
-        routes.putAll(ServletScanner.scanAndRegisterServlets("ru.otus.basic.yampolskiy.service"));
+        routes.putAll(ServletScanner.scanAndRegisterServlets("ru.otus.basic.yampolskiy.domain.servlets"));
         defaultServlet = DefaultServlet.class.getDeclaredConstructor().newInstance();
         defaultMethod = DefaultServlet.class.getDeclaredMethod("sendPageNotFound", HttpRequest.class);
     }

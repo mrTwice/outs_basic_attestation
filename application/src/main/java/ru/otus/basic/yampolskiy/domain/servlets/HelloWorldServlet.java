@@ -1,4 +1,4 @@
-package ru.otus.basic.yampolskiy.service;
+package ru.otus.basic.yampolskiy.domain.servlets;
 
 
 import ru.otus.basic.yampolskiy.servlets.HttpServlet;
@@ -11,16 +11,16 @@ import ru.otus.basic.yampolskiy.webserver.http.HttpResponse;
 import ru.otus.basic.yampolskiy.webserver.http.HttpStatus;
 
 
-@WebServlet("/test")
-public class TestServlet extends HttpServlet {
+@WebServlet("/hello")
+public class HelloWorldServlet extends HttpServlet {
 
-    @GetRoute("/one")
+    @GetRoute("/world")
     public HttpResponse helloWorld(HttpRequest request) throws Exception {
         return new HttpResponse.Builder()
                 .setProtocolVersion(request.getProtocolVersion())
                 .setStatus(HttpStatus.OK)
                 .addHeader(HttpHeader.CONTENT_TYPE, "text/html")
-                .setBody("<html><body><h1>This is first Test!</h1></body></html>")
+                .setBody("<html><body><h1>Hello World!</h1></body></html>")
                 .build();
     }
 
@@ -30,7 +30,7 @@ public class TestServlet extends HttpServlet {
                 .setProtocolVersion(request.getProtocolVersion())
                 .setStatus(HttpStatus.OK)
                 .addHeader(HttpHeader.CONTENT_TYPE, "text/html")
-                .setBody("<html><body><h1>Default test!</h1></body></html>")
+                .setBody("<html><body><h1>Hello!</h1></body></html>")
                 .build();
     }
 }
