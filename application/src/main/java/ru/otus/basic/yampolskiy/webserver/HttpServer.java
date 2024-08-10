@@ -27,7 +27,7 @@ public class HttpServer {
 
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            logger.log(Level.INFO, "Сервер запущен на порту: {}", port);
+            logger.log(Level.DEBUG, "Сервер запущен на порту: {}", port);
             while (true) {
                 Socket socket = serverSocket.accept();
                 threadPool.submit(new ConnectionHandler(socket, requestHandler));

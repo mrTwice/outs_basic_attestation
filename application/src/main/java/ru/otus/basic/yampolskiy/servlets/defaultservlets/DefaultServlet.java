@@ -20,14 +20,4 @@ public class DefaultServlet extends HttpServlet {
                 .setBody("<html><body><h1>404! PAGE NOT FOUND</h1></body></html>")
                 .build();
     }
-
-    @GetRoute
-    public HttpResponse sendInternalServerError(HttpRequest request) {
-        return new HttpResponse.Builder()
-                .setProtocolVersion(request.getProtocolVersion())
-                .setStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-                .addHeader(HttpHeader.CONTENT_TYPE, "text/html")
-                .setBody("<html><body><h1>500! INTERNAL SERVER ERROR</h1></body></html>")
-                .build();
-    }
 }

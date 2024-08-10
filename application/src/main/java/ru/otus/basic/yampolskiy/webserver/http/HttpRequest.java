@@ -75,4 +75,9 @@ public class HttpRequest extends Http{
         sb.append("}");
         return sb.toString();
     }
+
+    public String getHeader(HttpHeader httpHeader) {
+        String header = httpHeader.getHeaderName();
+        return headers.getHeader(header);
+    }
 }
