@@ -7,6 +7,8 @@ import ru.otus.basic.yampolskiy.domain.entities.User;
 import ru.otus.basic.yampolskiy.domain.entities.UserLoginDTO;
 import ru.otus.basic.yampolskiy.domain.services.UserService;
 import ru.otus.basic.yampolskiy.servlets.HttpServlet;
+import ru.otus.basic.yampolskiy.servlets.HttpServletRequest;
+import ru.otus.basic.yampolskiy.servlets.HttpServletResponse;
 import ru.otus.basic.yampolskiy.servlets.annotations.PostRoute;
 import ru.otus.basic.yampolskiy.servlets.annotations.WebServlet;
 import ru.otus.basic.yampolskiy.servlets.security.BearerAuthentication;
@@ -26,23 +28,28 @@ public class SignInController extends HttpServlet {
     private UserService userService = UserService.getUserService();
 
     @PostRoute()
-    public HttpResponse signIn(HttpRequest httpRequest) throws Exception {
-        String userLoginDTO = httpRequest.getBody();
+    public HttpServletResponse signIn(HttpServletRequest request) throws Exception {
+        String userLoginDTO = request.getBody();
         UserLoginDTO user = objectMapper.readValue(userLoginDTO, UserLoginDTO.class);
         User existUser = userService.getUserByUserName(user.getLogin());
         if (existUser == null || !existUser.getPassword().equals(user.getPassword())) {
             throw new RuntimeException("Неверно указан логин или пароль.");
         }
-        String jwtToken = JwtUtils.createToken(user.getLogin());
-        BearerAuthentication bearerAuth = new BearerAuthentication(jwtToken);
-        return new HttpResponse.Builder()
-                .setProtocolVersion(httpRequest.getProtocolVersion())
+
+        return new HttpServletResponse.Builder()
+                .setProtocolVersion(request.getProtocolVersion())
                 .setStatus(HttpStatus.OK)
                 .addHeader(HttpHeader.DATE, ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.RFC_1123_DATE_TIME))
                 .addHeader(HttpHeader.SERVER, "UserServer/0.1")
                 .addHeader(HttpHeader.CONTENT_TYPE, "application/octet-stream")
-                .addHeader(HttpHeader.AUTHORIZATION, bearerAuth.getJwtToken())
+                .addHeader(HttpHeader.AUTHORIZATION, addToken(existUser))
                 .setBody("")
                 .build();
+    }
+
+    private String addToken(User user) {
+        String jwtToken = JwtUtils.createToken(user.getLogin());
+        BearerAuthentication bearerAuth = new BearerAuthentication(jwtToken);
+        return bearerAuth.getJwtToken();
     }
 }

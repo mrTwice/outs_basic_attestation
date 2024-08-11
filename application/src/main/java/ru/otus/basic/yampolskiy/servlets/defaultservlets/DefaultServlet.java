@@ -1,6 +1,8 @@
 package ru.otus.basic.yampolskiy.servlets.defaultservlets;
 
 import ru.otus.basic.yampolskiy.servlets.HttpServlet;
+import ru.otus.basic.yampolskiy.servlets.HttpServletRequest;
+import ru.otus.basic.yampolskiy.servlets.HttpServletResponse;
 import ru.otus.basic.yampolskiy.servlets.annotations.GetRoute;
 import ru.otus.basic.yampolskiy.servlets.annotations.WebServlet;
 import ru.otus.basic.yampolskiy.webserver.http.HttpHeader;
@@ -12,8 +14,8 @@ import ru.otus.basic.yampolskiy.webserver.http.HttpStatus;
 public class DefaultServlet extends HttpServlet {
 
     @GetRoute
-    public HttpResponse sendPageNotFound(HttpRequest request) {
-        return new HttpResponse.Builder()
+    public HttpServletResponse sendPageNotFound(HttpServletRequest request) {
+        return new HttpServletResponse.Builder()
                 .setProtocolVersion(request.getProtocolVersion())
                 .setStatus(HttpStatus.NOT_FOUND)
                 .addHeader(HttpHeader.CONTENT_TYPE, "text/html")
