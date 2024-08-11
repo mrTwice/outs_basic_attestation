@@ -14,13 +14,13 @@ public class ServletScanner {
     private static final Logger logger = LogManager.getLogger(ServletScanner.class);
     private static final String DEFAULT_PACKAGE = "ru.otus.basic.yampolskiy.servlets.defaultservlets";
     private static final List<String> PACKAGES = new ArrayList<>();
-    private static final Map<String, Method> ROUTES = new HashMap<>();
+    private static final Map<String, Route> ROUTES = new HashMap<>();
 
     static {
         PACKAGES.add(DEFAULT_PACKAGE);
     }
 
-    public static Map<String, Method> scanAndRegisterServlets(String packageName) throws Exception {
+    public static Map<String, Route> scanAndRegisterServlets(String packageName) throws Exception {
         logger.debug("Starting scan and registration of servlets in package: {}", packageName);
         PACKAGES.add(packageName);
         for (String aPackage : PACKAGES) {
@@ -30,7 +30,7 @@ public class ServletScanner {
         return ROUTES;
     }
 
-    private static void scanAndRegisterServlets(String packageName, Map<String, Method> routes) throws Exception {
+    private static void scanAndRegisterServlets(String packageName, Map<String, Route> routes) throws Exception {
         logger.debug("Scanning package: {}", packageName);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         String path = packageName.replace('.', '/');
@@ -50,37 +50,38 @@ public class ServletScanner {
                 WebServlet webServlet = clazz.getAnnotation(WebServlet.class);
                 String basePath = webServlet.value();
                 logger.debug("Registering servlet: {} with base path: {}", clazz.getName(), basePath);
+                Servlet servlet = (Servlet) clazz.getDeclaredConstructor().newInstance();
                 for (Method method : clazz.getDeclaredMethods()) {
-                    processRouteAnnotations(routes, basePath, method);
+                    processRouteAnnotations(routes, basePath, servlet, method);
                 }
             }
         }
     }
 
-    private static void processRouteAnnotations(Map<String, Method> routes, String basePath, Method method) {
+    private static void processRouteAnnotations(Map<String, Route> routes, String basePath, Servlet servlet, Method method) {
         logger.debug("Processing method: {} in class: {}", method.getName(), method.getDeclaringClass().getName());
         if (method.isAnnotationPresent(GetRoute.class)) {
             GetRoute route = method.getAnnotation(GetRoute.class);
             String routePath = route.value().isEmpty() ? basePath : basePath + route.value();
-            routes.put("GET " + routePath, method);
+            routes.put("GET " + routePath, new Route(servlet, method));
             logger.debug("Registered GET route: {} -> {}", routePath, method);
         }
         if (method.isAnnotationPresent(PostRoute.class)) {
             PostRoute route = method.getAnnotation(PostRoute.class);
             String routePath = route.value().isEmpty() ? basePath : basePath + route.value();
-            routes.put("POST " + routePath, method);
+            routes.put("POST " + routePath, new Route(servlet, method));
             logger.debug("Registered POST route: {} -> {}", routePath, method);
         }
         if (method.isAnnotationPresent(PutRoute.class)) {
             PutRoute route = method.getAnnotation(PutRoute.class);
             String routePath = route.value().isEmpty() ? basePath : basePath + route.value();
-            routes.put("PUT " + routePath, method);
+            routes.put("PUT " + routePath, new Route(servlet, method));
             logger.debug("Registered PUT route: {} -> {}", routePath, method);
         }
         if (method.isAnnotationPresent(DeleteRoute.class)) {
             DeleteRoute route = method.getAnnotation(DeleteRoute.class);
             String routePath = route.value().isEmpty() ? basePath : basePath + route.value();
-            routes.put("DELETE " + routePath, method);
+            routes.put("DELETE " + routePath, new Route(servlet, method));
             logger.debug("Registered DELETE route: {} -> {}", routePath, method);
         }
     }
@@ -105,4 +106,7 @@ public class ServletScanner {
         return classes;
     }
 }
+
+
+
 
