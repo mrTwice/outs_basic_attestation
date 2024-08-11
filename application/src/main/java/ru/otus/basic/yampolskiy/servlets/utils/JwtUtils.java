@@ -33,17 +33,12 @@ public class JwtUtils {
     }
 
     public static String extractUsername(String token) {
-        try {
             Claims claims = Jwts.parser()
                     .setSigningKey(SECRET_KEY)
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
             return claims.getSubject();
-        } catch (Exception e) {
-            System.out.println("Ошибка извлечения имени пользователя из токена: " + e.getMessage());
-            return null;
-        }
     }
 }
 

@@ -1,6 +1,6 @@
 package ru.otus.basic.yampolskiy.servlets;
 
-public abstract class HttpServlet implements Servlet {
+public class HttpServlet implements Servlet {
     protected ServletContext context;
 
     public HttpServlet() {
