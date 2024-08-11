@@ -27,7 +27,7 @@ public class ServletDispatcher implements RequestHandler {
         routes = new HashMap<>();
         routes.putAll(ServletScanner.scanAndRegisterServlets("ru.otus.basic.yampolskiy.domain.controllers"));
         defaultServlet = DefaultServlet.class.getDeclaredConstructor().newInstance();
-        defaultMethod = DefaultServlet.class.getDeclaredMethod("sendPageNotFound", HttpRequest.class);
+        defaultMethod = DefaultServlet.class.getDeclaredMethod("sendPageNotFound", HttpServletRequest.class);
         filterChain = new FilterChain.Builder()
                 .addFilter(new JwtAuthenticationFilter()) // Фильтр аутентификации
                 //.permitAll() // Опция для разрешения доступа ко всем путям без проверки
@@ -38,9 +38,9 @@ public class ServletDispatcher implements RequestHandler {
 
     @Override
     public HttpResponse execute(HttpRequest request) {
-        RequestContext context = new RequestContext(request);
+        HttpServletRequest httpServletRequest = new HttpServletRequest(request);
         try {
-            if (!filterChain.doFilter(context)) {
+            if (!filterChain.doFilter(httpServletRequest)) {
                 return new HttpResponse.Builder()
                         .setProtocolVersion(request.getProtocolVersion())
                         .setStatus(HttpStatus.UNAUTHORIZED)
@@ -48,15 +48,15 @@ public class ServletDispatcher implements RequestHandler {
                         .setBody("<html><body><h1>401! UNAUTHORIZED</h1></body></html>")
                         .build();
             }
-            String route = request.getRoutingKey();
+            String route = httpServletRequest.getRoutingKey();
             if (!routes.containsKey(route)) {
-                return (HttpResponse) defaultMethod.invoke(defaultServlet, request);
+                return ((HttpServletResponse) defaultMethod.invoke(defaultServlet, httpServletRequest)).getHttpResponse();
             }
-            return getHttpResponse(request, route);
+            return getHttpResponse(httpServletRequest, route).getHttpResponse();
         } catch (Exception e) {
             logger.error("Ошибка обработки запроса",e);
             return new HttpResponse.Builder()
-                    .setProtocolVersion(request.getProtocolVersion())
+                    .setProtocolVersion(httpServletRequest.getProtocolVersion())
                     .setStatus(HttpStatus.INTERNAL_SERVER_ERROR)
                     .addHeader(HttpHeader.CONTENT_TYPE, "text/html")
                     .setBody("<html><body><h1>500! INTERNAL SERVER ERROR</h1></body></html>")
@@ -64,11 +64,11 @@ public class ServletDispatcher implements RequestHandler {
         }
     }
 
-    private HttpResponse getHttpResponse(HttpRequest request, String route) throws Exception {
+    private HttpServletResponse getHttpResponse(HttpServletRequest request, String route) throws Exception {
         Method method = routes.get(route);
         Servlet servlet = (Servlet) method.getDeclaringClass().getDeclaredConstructor().newInstance();
         try {
-            return (HttpResponse) method.invoke(servlet, request);
+            return (HttpServletResponse) method.invoke(servlet, request);
         } catch (InvocationTargetException e) {
             logger.error("Ошибка внутри метода сервлета", e.getCause());
             throw e;

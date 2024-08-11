@@ -1,5 +1,6 @@
 package ru.otus.basic.yampolskiy.servlets.security;
 
+import ru.otus.basic.yampolskiy.servlets.HttpServletRequest;
 import ru.otus.basic.yampolskiy.servlets.RequestContext;
 
 import java.util.ArrayList;
@@ -16,20 +17,20 @@ public class FilterChain {
         filters.add(filter);
     }
 
-    public boolean doFilter(RequestContext context) throws Exception {
-        String path = context.getRequest().getUri().getPath();
+    public boolean doFilter(HttpServletRequest request) throws Exception {
+        String path = request.getUri();
 
         if (permitAll || excludedPaths.contains(path)) {
             return true; // Пропускаем проверку, если разрешен доступ ко всем путям или путь находится в списке исключений
         }
 
-        return executeFilters(0, context);
+        return executeFilters(0, request);
     }
 
-    private boolean executeFilters(int index, RequestContext context) throws Exception {
+    private boolean executeFilters(int index, HttpServletRequest request) throws Exception {
         if (index < filters.size()) {
             Filter currentFilter = filters.get(index);
-            return currentFilter.doFilter(context) && executeFilters(index + 1, context);
+            return currentFilter.doFilter(request) && executeFilters(index + 1, request);
         }
         return true;
     }

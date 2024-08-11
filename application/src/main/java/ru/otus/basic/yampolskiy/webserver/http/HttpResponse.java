@@ -21,6 +21,10 @@ public class HttpResponse extends Http {
         return status;
     }
 
+    public void addHeader (HttpHeader httpHeader, String value) {
+        headers.addHeader(httpHeader.getHeaderName(), value);
+    }
+
     @Override
     public String toString() {
         StringBuilder responseBuilder = new StringBuilder();
