@@ -9,7 +9,8 @@ import ru.otus.basic.yampolskiy.domain.services.UserService;
 import ru.otus.basic.yampolskiy.servlets.*;
 import ru.otus.basic.yampolskiy.servlets.annotations.PostRoute;
 import ru.otus.basic.yampolskiy.servlets.annotations.WebServlet;
-import ru.otus.basic.yampolskiy.servlets.security.BearerAuthentication;
+import ru.otus.basic.yampolskiy.servlets.exceptions.AuthorizationException;
+import ru.otus.basic.yampolskiy.servlets.utils.BearerAuthentication;
 import ru.otus.basic.yampolskiy.servlets.utils.JwtUtils;
 import ru.otus.basic.yampolskiy.servlets.utils.ObjectMapperSingleton;
 import ru.otus.basic.yampolskiy.webserver.http.*;
@@ -29,9 +30,9 @@ public class SignInController extends HttpServlet {
     public HttpServletResponse signIn(HttpServletRequest request) throws Exception {
         String userLoginDTO = request.getBody();
         UserLoginDTO user = objectMapper.readValue(userLoginDTO, UserLoginDTO.class);
-        User existUser = userService.getUserByUserName(user.getLogin());
+        User existUser = userService.getUserByLogin(user.getLogin());
         if (existUser == null || !existUser.getPassword().equals(user.getPassword())) {
-            throw new RuntimeException("Неверно указан логин или пароль.");
+            throw new AuthorizationException("Неверно указан логин или пароль.");
         }
 
         return new HttpServletResponse.Builder()

@@ -3,8 +3,6 @@ package ru.otus.basic.yampolskiy.domain.entities;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import java.util.List;
-
 @JsonSerialize
 @JsonDeserialize
 public class User {

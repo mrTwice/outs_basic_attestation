@@ -1,7 +1,5 @@
 package ru.otus.basic.yampolskiy.servlets;
 
-import ru.otus.basic.yampolskiy.webserver.http.HttpRequest;
-
 import java.util.HashMap;
 import java.util.Map;
 

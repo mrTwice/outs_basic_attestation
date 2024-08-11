@@ -2,6 +2,8 @@ package ru.otus.basic.yampolskiy.domain.services;
 
 import ru.otus.basic.yampolskiy.domain.entities.User;
 import ru.otus.basic.yampolskiy.domain.entities.UserRegistrationDTO;
+import ru.otus.basic.yampolskiy.domain.exceptions.UserAlreadyExistException;
+import ru.otus.basic.yampolskiy.domain.exceptions.UserNotFoundException;
 import ru.otus.basic.yampolskiy.domain.repositories.UserRepository;
 
 import java.util.List;
@@ -24,9 +26,9 @@ public class UserService {
     }
 
     public User createNewUser(UserRegistrationDTO user) {
-        User existUser = userRepository.getUserByUsername(user.getLogin());
+        User existUser = userRepository.getUserByLogin(user.getLogin());
         if(existUser != null){
-            throw new RuntimeException("Пользователь с таким именем существует");
+            throw new UserAlreadyExistException("Пользователь с таким именем существует");
         }
         User newUser = userRepository.addNewUser(User.createUser(user.getLogin(), user.getPassword()));
         return newUser;
@@ -35,15 +37,15 @@ public class UserService {
     public User getUserById(Long id) {
         User user = userRepository.readUser(id);
         if(user == null) {
-            throw new RuntimeException("Пользователь с id = " + id + " не существует");
+            throw new UserNotFoundException("Пользователь с id = " + id + " не существует");
         }
         return user;
     }
 
     public void updateUserById(User user) {
         User existUser = userRepository.readUser(user.getId());
-        if(existUser != null){
-            throw new RuntimeException("Пользователь с таким именем существует");
+        if(existUser == null){
+            throw new UserNotFoundException("Пользователь с таким id не существует");
         }
         userRepository.updateUser(user);
     }
@@ -51,13 +53,15 @@ public class UserService {
     public void deleteUserById(Long id) {
         User user = userRepository.readUser(id);
         if(user == null) {
-            throw new RuntimeException("Пользователь с id = " + id + " не существует");
+            throw new UserNotFoundException("Пользователь с id = " + id + " не существует");
         }
         userRepository.deleteUser(id);
     }
 
-    public User getUserByUserName(String username) {
-        User user = userRepository.getUserByUsername(username);
+    public User getUserByLogin(String login) {
+        User user = userRepository.getUserByLogin(login);
+        if(user == null)
+            throw new UserNotFoundException("Пользователя с таким именем не существует");
         return user;
     }
 }
