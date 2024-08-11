@@ -1,13 +1,15 @@
 package ru.otus.basic.yampolskiy.domain.repositories;
 
+import ru.otus.basic.yampolskiy.webserver.ConfigLoader;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class ConnectionsManager {
-    private static final String DATABASE_URL = "jdbc:postgresql://localhost:5432/UserService";
-    private static final String POSTGRES_USER = "User";
-    private static final String POSTGRES_PASSWORD = "Password";
+public class ConnectionsManager extends ConfigLoader{
+    private static final String DATABASE_URL = getProperty("database.url");
+    private static final String POSTGRES_USER = getProperty("database.user");
+    private static final String POSTGRES_PASSWORD = getProperty("database.password");
     private static ConnectionsManager connectionsManager;
 
     private ConnectionsManager(){

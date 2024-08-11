@@ -1,4 +1,4 @@
-package ru.otus.basic.yampolskiy.servlets.security;
+package ru.otus.basic.yampolskiy.servlets.filters;
 
 import ru.otus.basic.yampolskiy.servlets.HttpServletRequest;
 

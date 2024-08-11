@@ -1,7 +1,6 @@
-package ru.otus.basic.yampolskiy.servlets.security;
+package ru.otus.basic.yampolskiy.servlets.filters;
 
 import ru.otus.basic.yampolskiy.servlets.HttpServletRequest;
-import ru.otus.basic.yampolskiy.servlets.RequestContext;
 
 public interface Filter {
     boolean doFilter(HttpServletRequest request) throws Exception;

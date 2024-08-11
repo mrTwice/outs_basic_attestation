@@ -1,4 +1,4 @@
-package ru.otus.basic.yampolskiy.servlets.security;
+package ru.otus.basic.yampolskiy.servlets.utils;
 
 public class BearerAuthentication {
     private String jwtToken;

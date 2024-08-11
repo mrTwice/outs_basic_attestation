@@ -2,9 +2,13 @@ package ru.otus.basic.yampolskiy.servlets;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.otus.basic.yampolskiy.domain.exceptions.UserNotFoundException;
+import ru.otus.basic.yampolskiy.servlets.exceptions.AuthorizationException;
 import ru.otus.basic.yampolskiy.servlets.exceptions.BadRequestException;
+import ru.otus.basic.yampolskiy.servlets.exceptions.ServiceException;
 import ru.otus.basic.yampolskiy.servlets.utils.ObjectMapperSingleton;
 import ru.otus.basic.yampolskiy.webserver.http.HttpHeader;
 import ru.otus.basic.yampolskiy.webserver.http.HttpStatus;
@@ -20,11 +24,17 @@ public class GlobalExceptionHandler {
     public static HttpServletResponse handleException(Throwable ex, HttpServletRequest request) {
         logger.error("Unhandled exception: {}", ex.getMessage(), ex);
 
-        if (ex instanceof BadRequestException) {
-            return createErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
-        } else {
-            return createErrorResponse(request, HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
-        }
+        return switch (ex) {
+            case BadRequestException badRequestException ->
+                    createErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
+            case AuthorizationException authorizationException ->
+                    createErrorResponse(request, HttpStatus.UNAUTHORIZED, ex.getMessage());
+            case UnrecognizedPropertyException unrecognizedPropertyException ->
+                    createErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
+            case ServiceException serviceException ->
+                    createErrorResponse(request, HttpStatus.CONFLICT, ex.getMessage());
+            default -> createErrorResponse(request, HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+        };
     }
 
     private static HttpServletResponse createErrorResponse(HttpServletRequest request, HttpStatus status, String message) {
