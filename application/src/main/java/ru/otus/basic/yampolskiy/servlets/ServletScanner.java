@@ -21,24 +21,24 @@ public class ServletScanner {
     }
 
     public static Map<String, Route> scanAndRegisterServlets(String packageName) throws Exception {
-        logger.debug("Starting scan and registration of servlets in package: {}", packageName);
+        logger.debug("Запуск сканирования и регистрации сервлетов: {}\n", packageName);
         PACKAGES.add(packageName);
         for (String aPackage : PACKAGES) {
             scanAndRegisterServlets(aPackage, ROUTES);
         }
-        logger.debug("Completed scan and registration. Registered routes: {}", ROUTES);
+        logger.debug("Сканирование и регистрация завершены. Зарегистрированные маршруты: {}\n", ROUTES);
         return ROUTES;
     }
 
     private static void scanAndRegisterServlets(String packageName, Map<String, Route> routes) throws Exception {
-        logger.debug("Scanning package: {}", packageName);
+        logger.debug("Сканируемый пакет: {}\n", packageName);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         String path = packageName.replace('.', '/');
         Enumeration<URL> resources = classLoader.getResources(path);
         List<File> dirs = new ArrayList<>();
         while (resources.hasMoreElements()) {
             URL resource = resources.nextElement();
-            logger.debug("Found resource: {}", resource);
+            logger.debug("Найденные ресурсы: {}\n", resource);
             dirs.add(new File(resource.getFile()));
         }
         List<Class<?>> classes = new ArrayList<>();
@@ -49,7 +49,7 @@ public class ServletScanner {
             if (clazz.isAnnotationPresent(WebServlet.class)) {
                 WebServlet webServlet = clazz.getAnnotation(WebServlet.class);
                 String basePath = webServlet.value();
-                logger.debug("Registering servlet: {} with base path: {}", clazz.getName(), basePath);
+                logger.debug("Регистрация сервлета: {} путь: {}\n", clazz.getName(), basePath);
                 Servlet servlet = (Servlet) clazz.getDeclaredConstructor().newInstance();
                 for (Method method : clazz.getDeclaredMethods()) {
                     processRouteAnnotations(routes, basePath, servlet, method);
@@ -59,38 +59,38 @@ public class ServletScanner {
     }
 
     private static void processRouteAnnotations(Map<String, Route> routes, String basePath, Servlet servlet, Method method) {
-        logger.debug("Processing method: {} in class: {}", method.getName(), method.getDeclaringClass().getName());
+        logger.debug("Обработка метода: {} в классе: {}\n", method.getName(), method.getDeclaringClass().getName());
         if (method.isAnnotationPresent(GetRoute.class)) {
             GetRoute route = method.getAnnotation(GetRoute.class);
             String routePath = route.value().isEmpty() ? basePath : basePath + route.value();
             routes.put("GET " + routePath, new Route(servlet, method));
-            logger.debug("Registered GET route: {} -> {}", routePath, method);
+            logger.debug("Зарегистрирован GET маршрут: {} -> {}\n", routePath, method);
         }
         if (method.isAnnotationPresent(PostRoute.class)) {
             PostRoute route = method.getAnnotation(PostRoute.class);
             String routePath = route.value().isEmpty() ? basePath : basePath + route.value();
             routes.put("POST " + routePath, new Route(servlet, method));
-            logger.debug("Registered POST route: {} -> {}", routePath, method);
+            logger.debug("Зарегистрирован POST маршрут: {} -> {}\n", routePath, method);
         }
         if (method.isAnnotationPresent(PutRoute.class)) {
             PutRoute route = method.getAnnotation(PutRoute.class);
             String routePath = route.value().isEmpty() ? basePath : basePath + route.value();
             routes.put("PUT " + routePath, new Route(servlet, method));
-            logger.debug("Registered PUT route: {} -> {}", routePath, method);
+            logger.debug("Зарегистрирован PUT маршрут: {} -> {}\n", routePath, method);
         }
         if (method.isAnnotationPresent(DeleteRoute.class)) {
             DeleteRoute route = method.getAnnotation(DeleteRoute.class);
             String routePath = route.value().isEmpty() ? basePath : basePath + route.value();
             routes.put("DELETE " + routePath, new Route(servlet, method));
-            logger.debug("Registered DELETE route: {} -> {}", routePath, method);
+            logger.debug("Зарегистрирован DELETE маршрут: {} -> {}\n", routePath, method);
         }
     }
 
     private static List<Class<?>> findClasses(File directory, String packageName) throws ClassNotFoundException {
-        logger.debug("Searching for classes in directory: {}", directory.getAbsolutePath());
+        logger.debug("Поиск классов в каталоге: {}\n", directory.getAbsolutePath());
         List<Class<?>> classes = new ArrayList<>();
         if (!directory.exists()) {
-            logger.warn("Directory does not exist: {}", directory.getAbsolutePath());
+            logger.warn("Каталог не существует: {}\n", directory.getAbsolutePath());
             return classes;
         }
         File[] files = directory.listFiles();
@@ -100,7 +100,7 @@ public class ServletScanner {
             } else if (file.getName().endsWith(".class")) {
                 String className = packageName + '.' + file.getName().substring(0, file.getName().length() - 6);
                 classes.add(Class.forName(className));
-                logger.debug("Found class: {}", className);
+                logger.debug("Найден класс: {}\n", className);
             }
         }
         return classes;
