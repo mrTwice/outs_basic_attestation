@@ -8,6 +8,7 @@ import ru.otus.basic.yampolskiy.domain.entities.UserRegistrationDTO;
 import ru.otus.basic.yampolskiy.domain.services.UserService;
 import ru.otus.basic.yampolskiy.servlets.*;
 import ru.otus.basic.yampolskiy.servlets.annotations.PostRoute;
+import ru.otus.basic.yampolskiy.servlets.annotations.RequestBody;
 import ru.otus.basic.yampolskiy.servlets.annotations.WebServlet;
 import ru.otus.basic.yampolskiy.servlets.utils.ObjectMapperSingleton;
 import ru.otus.basic.yampolskiy.webserver.http.*;
@@ -23,9 +24,8 @@ public class SignUpController extends HttpServlet {
     private final UserService userService = UserService.getUserService();
 
     @PostRoute()
-    public HttpServletResponse signUp(HttpServletRequest request) throws Exception {
-        String userRegistrationDTO = request.getBody();
-        User newUser = userService.createNewUser(objectMapper.readValue(userRegistrationDTO, UserRegistrationDTO.class));
+    public HttpServletResponse signUp(HttpServletRequest request, @RequestBody UserRegistrationDTO user) throws Exception {
+        User newUser = userService.createNewUser(user);
         return new HttpServletResponse.Builder()
                 .setProtocolVersion(request.getProtocolVersion())
                 .setStatus(HttpStatus.CREATED)

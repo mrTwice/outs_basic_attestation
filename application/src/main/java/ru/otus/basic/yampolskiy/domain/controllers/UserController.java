@@ -8,6 +8,7 @@ import ru.otus.basic.yampolskiy.domain.services.UserService;
 import ru.otus.basic.yampolskiy.servlets.*;
 import ru.otus.basic.yampolskiy.servlets.annotations.GetRoute;
 import ru.otus.basic.yampolskiy.servlets.annotations.PathVariable;
+import ru.otus.basic.yampolskiy.servlets.annotations.PostRoute;
 import ru.otus.basic.yampolskiy.servlets.annotations.WebServlet;
 import ru.otus.basic.yampolskiy.servlets.utils.ObjectMapperSingleton;
 import ru.otus.basic.yampolskiy.webserver.http.HttpHeader;
@@ -55,5 +56,4 @@ public class UserController extends HttpServlet {
                 .setBody(responseBody)
                 .build();
     }
-
 }

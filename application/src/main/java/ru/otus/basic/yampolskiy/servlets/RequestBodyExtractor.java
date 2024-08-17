@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ru.otus.basic.yampolskiy.servlets.utils.ObjectMapperSingleton;
 
-import java.io.IOException;
-
 public class RequestBodyExtractor {
     private static final ObjectMapper objectMapper = ObjectMapperSingleton.getInstance();
 

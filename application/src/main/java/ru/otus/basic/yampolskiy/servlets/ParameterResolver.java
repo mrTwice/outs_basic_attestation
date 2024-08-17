@@ -1,8 +1,10 @@
 package ru.otus.basic.yampolskiy.servlets;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.otus.basic.yampolskiy.servlets.annotations.PathVariable;
+import ru.otus.basic.yampolskiy.servlets.annotations.RequestBody;
 import ru.otus.basic.yampolskiy.servlets.annotations.RequestParam;
 
 import java.lang.annotation.Annotation;
@@ -11,7 +13,7 @@ import java.lang.reflect.Method;
 public class ParameterResolver {
     private static final Logger logger = LogManager.getLogger(ParameterResolver.class);
 
-    static public Object[] resolveParameters(Method method, HttpServletRequest request) {
+    static public Object[] resolveParameters(Method method, HttpServletRequest request) throws JsonProcessingException {
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         Class<?>[] parameterTypes = method.getParameterTypes();
         Object[] params = new Object[parameterTypes.length];
@@ -33,6 +35,10 @@ public class ParameterResolver {
                     logger.debug("Извлеченный параметр запроса перед конвертацией: " + paramName + " = " + paramValue);
                     params[i] = convertParameter(paramValue, parameterTypes[i]);
                     logger.debug("Извлеченный параметр запроса после конвертации: " + paramName + " = " + params[i]);
+                } else if (annotation instanceof RequestBody) {
+                    logger.debug("Десериализация тела запроса в тип: " + parameterTypes[i].getName());
+                    params[i] = RequestBodyExtractor.extractRequestBody(request, parameterTypes[i]);
+                    logger.debug("Десериализованное тело запроса: " + params[i]);
                 }
             }
 
