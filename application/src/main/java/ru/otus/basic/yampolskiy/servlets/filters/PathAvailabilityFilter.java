@@ -3,10 +3,15 @@ package ru.otus.basic.yampolskiy.servlets.filters;
 import ru.otus.basic.yampolskiy.servlets.HttpServletRequest;
 import ru.otus.basic.yampolskiy.servlets.exceptions.BadRequestException;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 public class PathAvailabilityFilter implements Filter {
     private final Set<String> availablePaths;
+    private final Map<String, Pattern> regexCache = new ConcurrentHashMap<>();
 
     public PathAvailabilityFilter(Set<String> availablePaths) {
         this.availablePaths = availablePaths;
@@ -15,9 +20,22 @@ public class PathAvailabilityFilter implements Filter {
     @Override
     public boolean doFilter(HttpServletRequest request) throws Exception {
         String path = request.getRoutingKey();
-        if (!availablePaths.contains(path)) {
+
+        // Проверка пути по регулярному выражению
+        boolean pathExists = availablePaths.stream()
+                .anyMatch(availablePath -> pathMatches(availablePath, path));
+
+        if (!pathExists) {
             throw new BadRequestException("Запрашиваемый путь '" + path + "' не существует.");
         }
+
         return true;
+    }
+
+    private boolean pathMatches(String pathPattern, String requestPath) {
+        Pattern pattern = regexCache.computeIfAbsent(pathPattern, p ->
+                Pattern.compile(p.replaceAll("\\{[^/]+\\}", "[^/]+"))
+        );
+        return pattern.matcher(requestPath).matches();
     }
 }

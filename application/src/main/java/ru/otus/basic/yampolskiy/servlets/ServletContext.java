@@ -2,10 +2,11 @@ package ru.otus.basic.yampolskiy.servlets;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ServletContext {
     private static ServletContext instance;
-    private Map<String, Object> attributes = new HashMap<>();
+    private Map<String, Object> attributes = new ConcurrentHashMap<>();
 
     private ServletContext() {}
 
