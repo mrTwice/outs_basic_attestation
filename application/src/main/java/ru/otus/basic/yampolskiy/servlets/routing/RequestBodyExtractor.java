@@ -1,7 +1,8 @@
-package ru.otus.basic.yampolskiy.servlets;
+package ru.otus.basic.yampolskiy.servlets.routing;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.otus.basic.yampolskiy.servlets.models.HttpServletRequest;
 import ru.otus.basic.yampolskiy.servlets.utils.ObjectMapperSingleton;
 
 public class RequestBodyExtractor {

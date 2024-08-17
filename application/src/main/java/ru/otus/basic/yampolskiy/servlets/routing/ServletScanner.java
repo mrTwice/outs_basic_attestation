@@ -1,4 +1,4 @@
-package ru.otus.basic.yampolskiy.servlets;
+package ru.otus.basic.yampolskiy.servlets.routing;
 
 import ru.otus.basic.yampolskiy.servlets.annotations.*;
 
@@ -9,6 +9,8 @@ import java.util.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.otus.basic.yampolskiy.servlets.models.Route;
+import ru.otus.basic.yampolskiy.servlets.models.Servlet;
 
 public class ServletScanner {
     private static final Logger logger = LogManager.getLogger(ServletScanner.class);
@@ -111,7 +113,8 @@ public class ServletScanner {
     }
 
     private static String convertToRegex(String path) {
-        return path.replaceAll("\\{\\w+\\}", "([^/]+)"); // Каждая переменная пути заменяется на группу захвата
+        // Каждая переменная пути заменяется на группу захвата
+        return path.replaceAll("\\{\\w+\\}", "([^/]+)");
     }
 
     private static String normalizePath(String path) {

@@ -2,7 +2,7 @@ package ru.otus.basic.yampolskiy.servlets.filters;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.otus.basic.yampolskiy.servlets.HttpServletRequest;
+import ru.otus.basic.yampolskiy.servlets.models.HttpServletRequest;
 import ru.otus.basic.yampolskiy.servlets.exceptions.TokenFormatException;
 import ru.otus.basic.yampolskiy.servlets.exceptions.TokenNotValidException;
 import ru.otus.basic.yampolskiy.servlets.utils.JwtUtils;

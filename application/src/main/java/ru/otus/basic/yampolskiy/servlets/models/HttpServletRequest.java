@@ -1,8 +1,10 @@
-package ru.otus.basic.yampolskiy.servlets;
+package ru.otus.basic.yampolskiy.servlets.models;
 
 import ru.otus.basic.yampolskiy.webserver.http.HttpHeader;
 import ru.otus.basic.yampolskiy.webserver.http.HttpMethod;
 import ru.otus.basic.yampolskiy.webserver.http.HttpRequest;
+
+import java.util.Map;
 
 
 public class HttpServletRequest {
@@ -52,5 +54,9 @@ public class HttpServletRequest {
 
     public HttpMethod getMethod() {
         return httpRequest.getMethod();
+    }
+
+    public Map<String, String> getRequestParameters(){
+        return httpRequest.getRequestParameters();
     }
 }

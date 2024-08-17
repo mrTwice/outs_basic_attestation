@@ -1,4 +1,4 @@
-package ru.otus.basic.yampolskiy.servlets;
+package ru.otus.basic.yampolskiy.servlets.models;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

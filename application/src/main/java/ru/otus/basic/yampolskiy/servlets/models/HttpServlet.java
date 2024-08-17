@@ -1,4 +1,4 @@
-package ru.otus.basic.yampolskiy.servlets;
+package ru.otus.basic.yampolskiy.servlets.models;
 
 public class HttpServlet implements Servlet {
     protected ServletContext context;
