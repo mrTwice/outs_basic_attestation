@@ -1,14 +1,13 @@
-package ru.otus.basic.yampolskiy.servlets;
+package ru.otus.basic.yampolskiy.servlets.exceptions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.otus.basic.yampolskiy.domain.exceptions.UserNotFoundException;
-import ru.otus.basic.yampolskiy.servlets.exceptions.AuthorizationException;
-import ru.otus.basic.yampolskiy.servlets.exceptions.BadRequestException;
-import ru.otus.basic.yampolskiy.servlets.exceptions.ServiceException;
+import ru.otus.basic.yampolskiy.servlets.models.Error;
+import ru.otus.basic.yampolskiy.servlets.models.HttpServletRequest;
+import ru.otus.basic.yampolskiy.servlets.models.HttpServletResponse;
 import ru.otus.basic.yampolskiy.servlets.utils.ObjectMapperSingleton;
 import ru.otus.basic.yampolskiy.webserver.http.HttpHeader;
 import ru.otus.basic.yampolskiy.webserver.http.HttpStatus;

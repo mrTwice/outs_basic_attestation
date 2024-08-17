@@ -191,15 +191,15 @@ public class UserRepository {
     }
 
 
-    public User getUserByLogin(String login) {
+    public User getUserByLogin(String username) {
         User user = null;
         try (Connection connection = dataBaseManager.getConnection()) {
             String query = "SELECT * FROM users WHERE username = ?";
             try (PreparedStatement statement = connection.prepareStatement(query)) {
-                statement.setString(1, login);
+                statement.setString(1, username);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
-                        user = User.createUser(resultSet.getString("login"), resultSet.getString("password"));
+                        user = User.createUser(resultSet.getString("username"), resultSet.getString("password"));
                         user.setId(resultSet.getLong("id"));
                     }
                 }

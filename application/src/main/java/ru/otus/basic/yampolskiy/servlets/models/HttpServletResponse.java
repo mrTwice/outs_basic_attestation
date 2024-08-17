@@ -1,4 +1,4 @@
-package ru.otus.basic.yampolskiy.servlets;
+package ru.otus.basic.yampolskiy.servlets.models;
 
 import ru.otus.basic.yampolskiy.webserver.http.HttpHeader;
 import ru.otus.basic.yampolskiy.webserver.http.HttpResponse;
