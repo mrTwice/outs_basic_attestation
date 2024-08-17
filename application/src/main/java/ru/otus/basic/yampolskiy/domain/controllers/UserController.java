@@ -20,8 +20,8 @@ import java.util.List;
 
 @WebServlet("/users")
 public class UserController extends HttpServlet {
-    private UserService userService = UserService.getUserService();
-    private ObjectMapper objectMapper = ObjectMapperSingleton.getInstance();
+    private final UserService userService = UserService.getUserService();
+    private final ObjectMapper objectMapper = ObjectMapperSingleton.getInstance();
     private final Logger logger = LogManager.getLogger(this);
 
     @GetRoute()

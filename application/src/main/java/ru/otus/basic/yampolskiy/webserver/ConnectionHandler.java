@@ -15,9 +15,9 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 public class ConnectionHandler implements Runnable {
-    private Logger logger = LogManager.getLogger(ConnectionHandler.class);
-    private Socket socket;
-    private RequestHandler requestHandler;
+    private final Logger logger = LogManager.getLogger(ConnectionHandler.class);
+    private final Socket socket;
+    private final RequestHandler requestHandler;
 
     public ConnectionHandler(Socket socket, RequestHandler requestHandler) throws IOException {
         this.socket = socket;
@@ -36,14 +36,15 @@ public class ConnectionHandler implements Runnable {
                 HttpRequest httpRequest = HttpParser.parseRawHttp(rawRequest);
                 HttpResponse httpResponse = requestHandler.execute(httpRequest);
                 out.write(httpResponse.toString().getBytes(StandardCharsets.UTF_8));
+                out.flush();
             }
         } catch (Exception e) {
-            logger.log(Level.ERROR, e);
+            logger.error("Ошибка обработки запроса", e);
         } finally {
             try {
                 socket.close();
             } catch (IOException e) {
-                logger.log(Level.ERROR, e);
+                logger.error("Ошибка при закрытии сокета", e);
             }
         }
     }
