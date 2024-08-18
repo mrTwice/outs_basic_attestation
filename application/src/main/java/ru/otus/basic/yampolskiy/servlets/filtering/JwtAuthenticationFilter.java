@@ -1,4 +1,4 @@
-package ru.otus.basic.yampolskiy.servlets.filters;
+package ru.otus.basic.yampolskiy.servlets.filtering;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

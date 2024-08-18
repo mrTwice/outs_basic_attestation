@@ -1,4 +1,4 @@
-package ru.otus.basic.yampolskiy.servlets.filters;
+package ru.otus.basic.yampolskiy.servlets.filtering;
 
 import ru.otus.basic.yampolskiy.servlets.models.HttpServletRequest;
 import ru.otus.basic.yampolskiy.servlets.exceptions.BadRequestException;
