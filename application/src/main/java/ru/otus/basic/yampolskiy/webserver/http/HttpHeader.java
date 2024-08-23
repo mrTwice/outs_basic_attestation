@@ -3,6 +3,7 @@ package ru.otus.basic.yampolskiy.webserver.http;
 public enum HttpHeader {
     CONTENT_TYPE("Content-Type"),
     CONTENT_LENGTH("Content-Length"),
+    CONTENT_DISPOSITION("Content-Disposition"),
     AUTHORIZATION("Authorization"),
     USER_AGENT("User-Agent"),
     ACCEPT("Accept"),

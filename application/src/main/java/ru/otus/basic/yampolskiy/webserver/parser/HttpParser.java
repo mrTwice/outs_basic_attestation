@@ -1,12 +1,13 @@
 package ru.otus.basic.yampolskiy.webserver.parser;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.otus.basic.yampolskiy.webserver.http.HttpHeaders;
 import ru.otus.basic.yampolskiy.webserver.http.HttpMethod;
 import ru.otus.basic.yampolskiy.webserver.http.HttpRequest;
 
+import java.io.InputStream;
+import java.net.Socket;
 import java.net.URI;
 
 public class HttpParser {
@@ -14,21 +15,21 @@ public class HttpParser {
 
     private static final ThreadLocal<HttpParser> parserThreadLocal = ThreadLocal.withInitial(HttpParser::new);
 
-    public static HttpRequest parseRawHttp(String rawHttp) {
+    public static HttpRequest parseRawHttp(String rawHttp, InputStream bodyStream, Socket socket) {
         logger.debug("Начало парсинга исходного HTTP-запроса:\n{}", rawHttp);
-        return parserThreadLocal.get().parse(rawHttp);
+        return parserThreadLocal.get().parse(rawHttp, bodyStream, socket);
     }
 
-    private HttpRequest parse(String rawHttp) {
-        HttpRequest httpRequest = new HttpRequest();
+    private HttpRequest parse(String rawHttp, InputStream in, Socket socket) {
+        HttpRequest httpRequest = new HttpRequest(in, socket);
         try {
             String requestLine = getRequestLine(rawHttp);
             logger.debug("Извлечена первая строка запроса (Request Line): {}", requestLine);
             parseRequestLine(requestLine, httpRequest);
             httpRequest.setHeaders(getHeaders(rawHttp));
             logger.debug("Заголовки запроса (Headers): {}", httpRequest.getHeaders());
-            httpRequest.setBody(getBody(rawHttp));
-            logger.debug("Тело запроса (Body): {}", httpRequest.getBody());
+//            httpRequest.setBody(getBody(rawHttp));
+//            logger.debug("Тело запроса (Body): {}", httpRequest.getBody());
         } catch (Exception e) {
             logger.error("Ошибка при парсинге HTTP-запроса: ", e);
         }
@@ -90,28 +91,28 @@ public class HttpParser {
         return headers;
     }
 
-    private static String getBody(String rawHttp) {
-        String[] requestLines = rawHttp.split("\r\n");
-        int emptyLineIndex = -1;
-        for (int i = 0; i < requestLines.length; i++) {
-            if (requestLines[i].isEmpty()) {
-                emptyLineIndex = i;
-                break;
-            }
-        }
-        if (emptyLineIndex == -1 || emptyLineIndex == requestLines.length - 1) {
-            logger.debug("Тело запроса отсутствует.");
-            return null;
-        }
-        StringBuilder bodyBuilder = new StringBuilder();
-        for (int i = emptyLineIndex + 1; i < requestLines.length; i++) {
-            bodyBuilder.append(requestLines[i]);
-            if (i < requestLines.length - 1) {
-                bodyBuilder.append("\r\n");
-            }
-        }
-        logger.debug("Извлечено тело запроса длиной {} символов.", bodyBuilder.length());
-        return bodyBuilder.toString();
-    }
+//    private static String getBody(String rawHttp) {
+//        String[] requestLines = rawHttp.split("\r\n");
+//        int emptyLineIndex = -1;
+//        for (int i = 0; i < requestLines.length; i++) {
+//            if (requestLines[i].isEmpty()) {
+//                emptyLineIndex = i;
+//                break;
+//            }
+//        }
+//        if (emptyLineIndex == -1 || emptyLineIndex == requestLines.length - 1) {
+//            logger.debug("Тело запроса отсутствует.");
+//            return null;
+//        }
+//        StringBuilder bodyBuilder = new StringBuilder();
+//        for (int i = emptyLineIndex + 1; i < requestLines.length; i++) {
+//            bodyBuilder.append(requestLines[i]);
+//            if (i < requestLines.length - 1) {
+//                bodyBuilder.append("\r\n");
+//            }
+//        }
+//        logger.debug("Извлечено тело запроса длиной {} символов.", bodyBuilder.length());
+//        return bodyBuilder.toString();
+//    }
 }
 

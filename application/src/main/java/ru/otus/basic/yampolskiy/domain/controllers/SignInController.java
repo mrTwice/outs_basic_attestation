@@ -7,6 +7,7 @@ import ru.otus.basic.yampolskiy.domain.entities.User;
 import ru.otus.basic.yampolskiy.domain.entities.UserLoginDTO;
 import ru.otus.basic.yampolskiy.domain.services.UserService;
 import ru.otus.basic.yampolskiy.servlets.annotations.PostRoute;
+import ru.otus.basic.yampolskiy.servlets.annotations.RequestBody;
 import ru.otus.basic.yampolskiy.servlets.annotations.WebServlet;
 import ru.otus.basic.yampolskiy.servlets.exceptions.AuthorizationException;
 import ru.otus.basic.yampolskiy.servlets.models.HttpServlet;
@@ -29,11 +30,11 @@ public class SignInController extends HttpServlet {
     private UserService userService = UserService.getUserService();
 
     @PostRoute()
-    public HttpServletResponse signIn(HttpServletRequest request) throws Exception {
-        String userLoginDTO = request.getBody();
-        UserLoginDTO user = objectMapper.readValue(userLoginDTO, UserLoginDTO.class);
-        User existUser = userService.getUserByLogin(user.getLogin());
-        if (existUser == null || !existUser.getPassword().equals(user.getPassword())) {
+    public HttpServletResponse signIn(HttpServletRequest request, @RequestBody UserLoginDTO userLoginDTO) throws Exception {
+        logger.debug("Проверка статуса в SignInController сокета строка 34: " + (request.getHttpRequest().getSocket().isClosed() ? "закрыт" : "открыт"));
+
+        User existUser = userService.getUserByLogin(userLoginDTO.getLogin());
+        if (existUser == null || !existUser.getPassword().equals(userLoginDTO.getPassword())) {
             throw new AuthorizationException("Неверно указан логин или пароль.");
         }
 

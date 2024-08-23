@@ -4,6 +4,9 @@ import ru.otus.basic.yampolskiy.webserver.http.HttpHeader;
 import ru.otus.basic.yampolskiy.webserver.http.HttpMethod;
 import ru.otus.basic.yampolskiy.webserver.http.HttpRequest;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Map;
 
 
@@ -28,9 +31,9 @@ public class HttpServletRequest {
         return httpRequest.getUri().getPath();
     }
 
-    public String getBody() {
-        return httpRequest.getBody();
-    }
+//    public String getBody() {
+//        return httpRequest.getBody();
+//    }
 
     public String getProtocolVersion() {
         return httpRequest.getProtocolVersion();
@@ -58,5 +61,13 @@ public class HttpServletRequest {
 
     public Map<String, String> getRequestParameters(){
         return httpRequest.getRequestParameters();
+    }
+
+    public String getContentType(){
+        return httpRequest.getHeader(HttpHeader.CONTENT_TYPE);
+    }
+
+    public InputStream getBodyInputStream () {
+        return httpRequest.getBodyStream();
     }
 }
