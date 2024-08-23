@@ -41,7 +41,7 @@ public class ParameterResolver {
                     logger.debug("Десериализованное тело запроса: " + params[i]);
                 } else if (annotation instanceof UploadedFile) {
                     logger.debug("Обработка загруженного файла для параметра: " + parameterTypes[i].getName());
-                    params[i] = RequestBodyExtractor.handleMultipartFile(request);
+                    params[i] = RequestBodyExtractor.extractMultipartData(request);
                     logger.debug("Загруженный файл: " + params[i]);
                 }
             }

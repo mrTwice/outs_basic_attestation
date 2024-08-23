@@ -6,6 +6,7 @@ import ru.otus.basic.yampolskiy.webserver.http.HttpHeaders;
 import ru.otus.basic.yampolskiy.webserver.http.HttpMethod;
 import ru.otus.basic.yampolskiy.webserver.http.HttpRequest;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 import java.net.URI;
@@ -15,12 +16,12 @@ public class HttpParser {
 
     private static final ThreadLocal<HttpParser> parserThreadLocal = ThreadLocal.withInitial(HttpParser::new);
 
-    public static HttpRequest parseRawHttp(String rawHttp, InputStream bodyStream, Socket socket) {
+    public static HttpRequest parseRawHttp(String rawHttp, InputStream bodyStream, Socket socket) throws IOException {
         logger.debug("Начало парсинга исходного HTTP-запроса:\n{}", rawHttp);
         return parserThreadLocal.get().parse(rawHttp, bodyStream, socket);
     }
 
-    private HttpRequest parse(String rawHttp, InputStream in, Socket socket) {
+    private HttpRequest parse(String rawHttp, InputStream in, Socket socket) throws IOException {
         HttpRequest httpRequest = new HttpRequest(in, socket);
         try {
             String requestLine = getRequestLine(rawHttp);
