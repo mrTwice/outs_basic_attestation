@@ -24,10 +24,8 @@ public class RequestProcessor {
     public HttpResponse process(HttpServletRequest request) throws Throwable {
         Route route = findRoute(request);
         Method targetMethod = route.getMethod();
-
         Object[] methodParameters = prepareParametersIfNeeded(targetMethod, request);
         validateParameters(targetMethod, methodParameters);
-
         Object response = invokeHandler(route.getServlet(), targetMethod, methodParameters);
         return getHttpResponse(response);
     }
@@ -37,7 +35,6 @@ public class RequestProcessor {
         if (targetMethod.getParameterCount() == 0) {
             return new Object[0];
         }
-
         // Подготовка параметров, если они требуются
         return prepareParameters(targetMethod, request);
     }
@@ -52,11 +49,9 @@ public class RequestProcessor {
 
     private Object[] prepareParameters(Method targetMethod, HttpServletRequest request) throws Throwable {
         Object[] methodParameters = ParameterResolver.resolveParameters(targetMethod, request);
-
         methodParameters = Arrays.stream(methodParameters)
                 .filter(Objects::nonNull)
                 .toArray(Object[]::new);
-
         if (targetMethod.getParameterCount() > 0 &&
                 targetMethod.getParameterTypes()[0].equals(HttpServletRequest.class)) {
             Object[] finalParameters = new Object[methodParameters.length + 1];

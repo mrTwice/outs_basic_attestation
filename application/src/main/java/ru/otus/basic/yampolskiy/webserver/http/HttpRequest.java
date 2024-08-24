@@ -1,5 +1,7 @@
 package ru.otus.basic.yampolskiy.webserver.http;
 
+import java.io.InputStream;
+import java.net.Socket;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,8 +11,12 @@ public class HttpRequest extends Http{
     private URI uri;
     private String protocolVersion;
     private Map<String, String> requestParameters;
+    private final Socket socket;
+    private final InputStream bodyStream;
 
-    public HttpRequest() {
+    public HttpRequest(InputStream bodyStream, Socket socket) {
+        this.socket = socket;
+        this.bodyStream = bodyStream;
         this.requestParameters = new HashMap<>();
     }
 
@@ -62,6 +68,14 @@ public class HttpRequest extends Http{
         return requestParameters.get(key);
     }
 
+    public InputStream getBodyStream() {
+        return bodyStream;
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -71,7 +85,7 @@ public class HttpRequest extends Http{
         sb.append("  protocolVersion='").append(protocolVersion != null ? protocolVersion : "null").append("',\n");
         sb.append("  requestParameters=").append(requestParameters != null ? requestParameters : "null").append(",\n");
         sb.append("  headers=").append(headers != null ? headers : "null").append(",\n");
-        sb.append("  body='").append(body != null ? body : "null").append("'\n");
+//        sb.append("  body='").append(body != null ? body : "null").append("'\n");
         sb.append("}");
         return sb.toString();
     }
